@@ -8,20 +8,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as stats
 
-theta12 = np.loadtxt("C:/Users/k20087271/Documents/Reparametrisation data/theta12")
-theta13 = np.loadtxt("C:/Users/k20087271/Documents/Reparametrisation data/theta13")
-theta23 = np.loadtxt("C:/Users/k20087271/Documents/Reparametrisation data/theta23")
-delta   = np.loadtxt("C:/Users/k20087271/Documents/Reparametrisation data/delta  ")
+theta12 = np.loadtxt("C:/Users/k20087271/Documents/pyMC3_Reparametrisation/data/theta12")
+theta13 = np.loadtxt("C:/Users/k20087271/Documents/pyMC3_Reparametrisation/data/theta13")
+theta23 = np.loadtxt("C:/Users/k20087271/Documents/pyMC3_Reparametrisation/data/theta23")
+delta   = np.loadtxt("C:/Users/k20087271/Documents/pyMC3_Reparametrisation/data/delta  ")
 
-theta12ACB = np.loadtxt("C:/Users/k20087271/Documents/Reparametrisation data/theta12_ACB")
-theta13ACB = np.loadtxt("C:/Users/k20087271/Documents/Reparametrisation data/theta13_ACB")
-theta23ACB = np.loadtxt("C:/Users/k20087271/Documents/Reparametrisation data/theta23_ACB")
-deltaACB   = np.loadtxt("C:/Users/k20087271/Documents/Reparametrisation data/delta_ACB  ")
+theta12ACB = np.loadtxt("C:/Users/k20087271/Documents/pyMC3_Reparametrisation/data/theta12_ACB")
+theta13ACB = np.loadtxt("C:/Users/k20087271/Documents/pyMC3_Reparametrisation/data/theta13_ACB")
+theta23ACB = np.loadtxt("C:/Users/k20087271/Documents/pyMC3_Reparametrisation/data/theta23_ACB")
+deltaACB   = np.loadtxt("C:/Users/k20087271/Documents/pyMC3_Reparametrisation/data/delta_ACB  ")
 
-theta12BCA = np.loadtxt("C:/Users/k20087271/Documents/Reparametrisation data/theta12_BCA")
-theta13BCA = np.loadtxt("C:/Users/k20087271/Documents/Reparametrisation data/theta13_BCA")
-theta23BCA = np.loadtxt("C:/Users/k20087271/Documents/Reparametrisation data/theta23_BCA")
-deltaBCA   = np.loadtxt("C:/Users/k20087271/Documents/Reparametrisation data/delta_BCA  ")
+theta12BCA = np.loadtxt("C:/Users/k20087271/Documents/pyMC3_Reparametrisation/data/theta12_BCA")
+theta13BCA = np.loadtxt("C:/Users/k20087271/Documents/pyMC3_Reparametrisation/data/theta13_BCA")
+theta23BCA = np.loadtxt("C:/Users/k20087271/Documents/pyMC3_Reparametrisation/data/theta23_BCA")
+deltaBCA   = np.loadtxt("C:/Users/k20087271/Documents/pyMC3_Reparametrisation/data/delta_BCA  ")
 
 
 ax = plt.subplot()
@@ -30,7 +30,7 @@ J = []
 J2 = []
 J3 = []
 
-for i in range(2000000):
+for i in range(200000):
         index = np.random.choice(theta12.shape[0], 4, replace=False) 
         v12 = theta12[index[0]]
         v13 = theta13[index[1]]
@@ -49,7 +49,7 @@ for i in range(2000000):
         sdl = np.sin(vDl)
         cdl = np.cos(vDl)        
         
-        J_point_ABC = (s12**2)*(c13**2)*c23*c12*s23*s13*sdl*(c12+s12)
+        J_point_ABC = c12*c13**2*c23*s12*s13*s23*sdl
         
         v12 = theta12ACB[index[0]]
         v13 = theta13ACB[index[1]]
@@ -67,7 +67,7 @@ for i in range(2000000):
 
         sdl = np.sin(vDl)
         cdl = np.cos(vDl) 
-        J_point_ACB = +c12**2*c23*c13*s12*s13*s12*sdl
+        J_point_ACB = c12**2*c23*c13*s12*s13*s12*sdl
         
         v12 = theta12BCA[index[0]]
         v13 = theta13BCA[index[1]]
@@ -85,9 +85,8 @@ for i in range(2000000):
 
         sdl = np.sin(vDl)
         cdl = np.cos(vDl) 
-        J_point_ACB = +c12**2*c23*c13*s12*s13*s12*sdl
         
-        J_point_BCA = c12**2*sdl*c23*c13*s23*s13*s12
+        J_point_BCA = c12**2*c23*c13*s23*s13*s12*sdl
         
         J.append(J_point_ABC)
         J2.append(J_point_ACB)
@@ -108,8 +107,8 @@ kde2 = stats.gaussian_kde(np.array(J2))
 kde3 = stats.gaussian_kde(np.array(J3))
 
 
-x_eval = np.linspace(-.1, .1, num=600)
-ax.plot(x_eval, kde1(x_eval), color = 'deepskyblue', alpha = 0.5)
+x_eval = np.linspace(-.1, .1, num=1000)
+ax.plot(x_eval, kde1(x_eval), color = 'orange', alpha = 0.4)
 ax.plot(x_eval, kde2(x_eval), color = 'turquoise', alpha = 0.5)
 ax.plot(x_eval, kde3(x_eval), color = 'mediumspringgreen', alpha = 0.5)
 
@@ -168,3 +167,9 @@ total = J+J2+J3
 ax.hist(total,bins=60, density = True,  color = "yellow",    alpha =0.75)            
 plt.plot(x, stats.norm.pdf(x, np.average(total), np.std(total)), linewidth =1.5, color = 'blue') 
 """  
+
+np.savetxt('C:/Users/k20087271/Documents/pyMC3_Reparametrisation/data/J_ABC',J,  delimiter = ', ')
+np.savetxt('C:/Users/k20087271/Documents/pyMC3_Reparametrisation/data/J_ACB',J2, delimiter = ', ')
+np.savetxt('C:/Users/k20087271/Documents/pyMC3_Reparametrisation/data/J_BCA',J3, delimiter = ', ')
+
+plt.savefig('C:/Users/k20087271/Documents/pyMC3_Reparametrisation/plots/Jarlskog estimation', dpi = 700)
